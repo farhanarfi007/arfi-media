@@ -1,13 +1,11 @@
-// EDIT THESE LINKS when your Canva, Facebook and video portfolio URLs are ready.
-const PORTFOLIO_LINKS = {
-  canva: '', // e.g. 'https://www.canva.com/design/.../view'
-  facebook: '', // e.g. 'https://www.facebook.com/yourpage'
-  video: '' // e.g. 'https://www.youtube.com/@yourchannel'
-};
-for (const [key, id] of Object.entries({canva:'canvaLink',facebook:'facebookLink',video:'videoLink'})) {
-  const element = document.getElementById(id);
-  if (PORTFOLIO_LINKS[key]) {element.href=PORTFOLIO_LINKS[key];element.target='_blank';element.rel='noopener noreferrer';}
-  else {element.addEventListener('click',e=>{e.preventDefault();alert('Portfolio link coming soon. Add your '+key+' URL in script.js.');});}
+// Image paths work whether your photos are in the repository root or in /assets/.
+const photoCandidates = name => [name, `assets/${name}`, `assets/images/${name}`];
+function loadWithFallback(img, name, onSuccess) {
+  const choices=photoCandidates(name); let i=0;
+  function next(){if(i>=choices.length){img.style.opacity='0';return;}const path=choices[i++];const test=new Image();test.onload=()=>{img.src=path;img.style.opacity='1';onSuccess?.(path);};test.onerror=next;test.src=path;}next();
 }
-const toggle=document.querySelector('.menu-toggle');const nav=document.querySelector('.nav');toggle.addEventListener('click',()=>{const open=nav.classList.toggle('open');toggle.setAttribute('aria-expanded',String(open));});nav.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>{nav.classList.remove('open');toggle.setAttribute('aria-expanded','false');}));
-const dialog=document.getElementById('lightbox');document.querySelectorAll('.photo').forEach(button=>button.addEventListener('click',()=>{const img=dialog.querySelector('img');img.src=button.dataset.full;img.alt=button.querySelector('img').alt;dialog.showModal();}));document.getElementById('closeLightbox').addEventListener('click',()=>dialog.close());dialog.addEventListener('click',e=>{if(e.target===dialog)dialog.close();});document.getElementById('year').textContent=new Date().getFullYear();
+document.querySelectorAll('[data-photo]').forEach(img=>loadWithFallback(img,img.dataset.photo));
+const hero=document.querySelector('.hero-photo');
+const heroTest=new Image();loadWithFallback(heroTest,'DSC02128.JPG',path=>hero.style.backgroundImage=`url("${path}")`);
+const menu=document.querySelector('.menu'),nav=document.querySelector('.nav');menu.addEventListener('click',()=>{const open=nav.classList.toggle('open');menu.setAttribute('aria-expanded',String(open));});nav.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>{nav.classList.remove('open');menu.setAttribute('aria-expanded','false');}));
+const dialog=document.getElementById('lightbox');document.querySelectorAll('.shot').forEach(btn=>btn.addEventListener('click',()=>{const source=btn.querySelector('img').src;if(!source)return;dialog.querySelector('img').src=source;dialog.showModal();}));document.getElementById('close').addEventListener('click',()=>dialog.close());dialog.addEventListener('click',e=>{if(e.target===dialog)dialog.close();});document.getElementById('year').textContent=new Date().getFullYear();
