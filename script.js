@@ -9,3 +9,11 @@ const hero=document.querySelector('.hero-photo');
 const heroTest=new Image();loadWithFallback(heroTest,'DSC02128.JPG',path=>hero.style.backgroundImage=`url("${path}")`);
 const menu=document.querySelector('.menu'),nav=document.querySelector('.nav');menu.addEventListener('click',()=>{const open=nav.classList.toggle('open');menu.setAttribute('aria-expanded',String(open));});nav.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>{nav.classList.remove('open');menu.setAttribute('aria-expanded','false');}));
 const dialog=document.getElementById('lightbox');document.querySelectorAll('.shot').forEach(btn=>btn.addEventListener('click',()=>{const source=btn.querySelector('img').src;if(!source)return;dialog.querySelector('img').src=source;dialog.showModal();}));document.getElementById('close').addEventListener('click',()=>dialog.close());dialog.addEventListener('click',e=>{if(e.target===dialog)dialog.close();});document.getElementById('year').textContent=new Date().getFullYear();
+
+// Featured external portfolio cards reuse photos already uploaded to GitHub.
+document.querySelectorAll('[data-card-photo]').forEach(card => {
+  const img = new Image();
+  loadWithFallback(img, card.dataset.cardPhoto, path => {
+    card.style.backgroundImage = `url("${path}")`;
+  });
+});
